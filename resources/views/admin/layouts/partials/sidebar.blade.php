@@ -17,10 +17,10 @@
                 </section>
                 <section class="sidebar-dropdown">
                     <a href="{{ route('admin.market.category.index') }}">دسته بندی</a>
-                    <a href="#">فرم کالا</a>
+                    <a href="{{ route('admin.market.property.index') }}">فرم کالا</a>
                     <a href="{{ route('admin.market.brand.index') }}">برندها</a>
-                    <a href="#">کالاها</a>
-                    <a href="#">انبار</a>
+                    <a href="{{ route('admin.market.product.index') }}">کالاها</a>
+                    <a href="{{ route('admin.market.storage.index') }}">انبار</a>
                     <a href="{{ route('admin.market.comment.index') }}">نظرات</a>
                 </section>
             </section>
@@ -37,7 +37,7 @@
                     <a href="#">پرداخت نشده</a>
                     <a href="#">باطل شده</a>
                     <a href="#">مرجوعی</a>
-                    <a href="#">تمام سفارشات</a>
+                    <a href="{{ route('admin.market.order.all') }}">تمام سفارشات</a>
                 </section>
             </section>
 
@@ -62,13 +62,13 @@
                     <i class="fas fa-angle-left angle"></i>
                 </section>
                 <section class="sidebar-dropdown">
-                    <a href="#">کپن تخفیف</a>
-                    <a href="#">تخفیف عمومی</a>
-                    <a href="#">فروش شگفت انگیز</a>
+                    <a href="{{ route('admin.market.discount.coupan') }}">کپن تخفیف</a>
+                    <a href="{{ route('admin.market.discount.commonDiscount') }}">تخفیف عمومی</a>
+                    <a href="{{ route('admin.market.discount.amazingSale') }}">فروش شگفت انگیز</a>
                 </section>
             </section>
 
-            <a href="#" class="sidebar-link">
+            <a href="{{ route('admin.market.delivery.index') }}" class="sidebar-link">
                 <i class="fas fa-bars"></i>
                 <span>روش های ارسال</span>
             </a>
