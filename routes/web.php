@@ -18,6 +18,9 @@ use App\Http\Controllers\Admin\Market\PaymentController;
 use App\Http\Controllers\Admin\Market\ProductController;
 use App\Http\Controllers\Admin\Market\PropertyController;
 use App\Http\Controllers\Admin\Market\StorageController;
+use App\Http\Controllers\Admin\User\AdminUserController;
+use App\Http\Controllers\Admin\User\CustomerController;
+use App\Http\Controllers\Admin\User\RoleController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', function () {
@@ -101,6 +104,14 @@ Route::prefix('admin')->middleware([])->name('admin.')->group(function() {
         Route::resource('menu', MenuController::class);
         Route::resource('page', PageController::class);
         Route::resource('post', PostController::class);
+    });
+
+
+    // User routes
+    Route::prefix('user')->name('user.')->group(function() {
+        Route::resource('admin-user', AdminUserController::class);
+        Route::resource('customer', CustomerController::class);
+        Route::resource('role', RoleController::class);
     });
 
 
