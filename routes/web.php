@@ -1,6 +1,12 @@
 <?php
 
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\Content\CategoryController as ContentCategoryController;
+use App\Http\Controllers\Admin\Content\CommentController as ContentCommentController;
+use App\Http\Controllers\Admin\Content\FAQController;
+use App\Http\Controllers\Admin\Content\MenuController;
+use App\Http\Controllers\Admin\Content\PageController;
+use App\Http\Controllers\Admin\Content\PostController;
 use App\Http\Controllers\Admin\Market\BrandController;
 use App\Http\Controllers\Admin\Market\CategoryController;
 use App\Http\Controllers\Admin\Market\CommentController;
@@ -85,6 +91,16 @@ Route::prefix('admin')->middleware([])->name('admin.')->group(function() {
         });
         
 
+    });
+
+    // Content routes
+    Route::prefix('content')->name('content.')->group(function() {
+        Route::resource('category', ContentCategoryController::class);
+        Route::resource('comment', ContentCommentController::class);
+        Route::resource('faq', FAQController::class);
+        Route::resource('menu', MenuController::class);
+        Route::resource('page', PageController::class);
+        Route::resource('post', PostController::class);
     });
 
 
