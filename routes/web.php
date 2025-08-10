@@ -1,27 +1,31 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\Content\CategoryController as ContentCategoryController;
-use App\Http\Controllers\Admin\Content\CommentController as ContentCommentController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\User\RoleController;
+use App\Http\Controllers\Admin\Notify\SMSController;
 use App\Http\Controllers\Admin\Content\FAQController;
 use App\Http\Controllers\Admin\Content\MenuController;
 use App\Http\Controllers\Admin\Content\PageController;
 use App\Http\Controllers\Admin\Content\PostController;
 use App\Http\Controllers\Admin\Market\BrandController;
-use App\Http\Controllers\Admin\Market\CategoryController;
-use App\Http\Controllers\Admin\Market\CommentController;
-use App\Http\Controllers\Admin\Market\DeliveryController;
-use App\Http\Controllers\Admin\Market\DiscountController;
-use App\Http\Controllers\Admin\Market\GalleryController;
 use App\Http\Controllers\Admin\Market\OrderController;
+use App\Http\Controllers\Admin\Notify\EmailController;
+use App\Http\Controllers\Admin\Ticket\TicketController;
+use App\Http\Controllers\Admin\User\CustomerController;
+use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\Market\CommentController;
+use App\Http\Controllers\Admin\Market\GalleryController;
 use App\Http\Controllers\Admin\Market\PaymentController;
 use App\Http\Controllers\Admin\Market\ProductController;
-use App\Http\Controllers\Admin\Market\PropertyController;
 use App\Http\Controllers\Admin\Market\StorageController;
 use App\Http\Controllers\Admin\User\AdminUserController;
-use App\Http\Controllers\Admin\User\CustomerController;
-use App\Http\Controllers\Admin\User\RoleController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Admin\Market\CategoryController;
+use App\Http\Controllers\Admin\Market\DeliveryController;
+use App\Http\Controllers\Admin\Market\DiscountController;
+use App\Http\Controllers\Admin\Market\PropertyController;
+use App\Http\Controllers\Admin\Content\CommentController as ContentCommentController;
+use App\Http\Controllers\Admin\Content\CategoryController as ContentCategoryController;
+use App\Http\Controllers\Admin\Setting\SettingController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -112,6 +116,34 @@ Route::prefix('admin')->middleware([])->name('admin.')->group(function() {
         Route::resource('admin-user', AdminUserController::class);
         Route::resource('customer', CustomerController::class);
         Route::resource('role', RoleController::class);
+    });
+
+
+    // Notify routes
+    Route::prefix('notify')->name('notify.')->group(function() {
+        Route::resource('email', EmailController::class);
+        Route::resource('sms', SMSController::class);
+    });
+
+
+    // Tickets routes
+    Route::prefix('tickets')->name('tickets.')->group(function() {
+        Route::get('/new-tickets', [TicketController::class, 'newTickets'])->name('newTickets');
+        Route::get('/open-tickets', [TicketController::class, 'openTickets'])->name('openTickets');
+        Route::get('/closed-tickets', [TicketController::class, 'closedTickets'])->name('closedTickets');
+        Route::get('/', [TicketController::class, 'index'])->name('index');
+        Route::get('/create', [TicketController::class, 'create'])->name('create');
+        Route::get('/show/{ticket}', [TicketController::class, 'show'])->name('show');
+        Route::post('/store', [TicketController::class, 'store'])->name('store');
+        Route::get('/edit/{ticket}', [TicketController::class, 'edit'])->name('edit');
+        Route::put('/update/{ticket}', [TicketController::class, 'update'])->name('update');
+        Route::delete('/destroy/{ticket}', [TicketController::class, 'destroy'])->name('destroy');
+    });
+
+
+    // Setting routes
+    Route::prefix('setting')->name('setting.')->group(function() {
+        Route::resource('setting', SettingController::class);
     });
 
 
