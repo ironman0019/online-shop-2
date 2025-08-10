@@ -58,8 +58,8 @@
 </section>
 
 @endsection
-@section('script')
-
+@section('scripts')
+    @parent
     <script src="{{ asset('admin-assets/ckeditor/ckeditor.js') }}"></script>
     <script>
         CKEDITOR.replace('body');
