@@ -29,7 +29,7 @@
                 </section>
 
                 <section>
-                    <form action="{{ route('admin.content.category.store') }}" method="POST" enctype="multipart/form-data">
+                    <form id="form" action="{{ route('admin.content.category.store') }}" method="POST" enctype="multipart/form-data">
                         @csrf
 
                         <section class="row">
