@@ -104,7 +104,7 @@ Route::prefix('admin')->middleware([])->name('admin.')->group(function() {
     Route::prefix('content')->name('content.')->group(function() {
         // Category routes
         Route::resource('category', ContentCategoryController::class);
-        Route::get('category/status', [ContentCategoryController::class, 'status'])->name('category.status');
+        Route::get('category/{category}/status', [ContentCategoryController::class, 'status'])->name('category.status');
 
         Route::resource('comment', ContentCommentController::class);
         Route::resource('faq', FAQController::class);
