@@ -23,7 +23,6 @@
                     </h5>
                 </section>
 
-                @include('admin.alerts.sweetalert.success')
 
                 <section class="d-flex justify-content-between align-items-center mt-4 mb-3 border-bottom pb-2">
                     <a href="{{ route('admin.content.category.create') }}" class="btn btn-info btn-sm">ایجاد دسته بندی</a>
@@ -60,12 +59,13 @@
                                     </td>
                                     <td>{{ $category->tags }}</td>
                                     <td>
-                                        <label>
-                                            <input id="{{ $category->id }}"
-                                                onchange="changeStatus({{ $category->id }})"
-                                                data-url="{{ route('admin.content.category.status', $category->id) }}"
-                                                type="checkbox" @if ($category->status === 1) checked @endif>
-                                        </label>
+                                        <button type="button" id="{{ $category->id }}"
+                                            onclick="changeStatus({{ $category->id }})"
+                                            data-url="{{ route('admin.content.category.status', $category->id) }}"
+                                            class="btn btn-sm status-toggle {{ $category->status === 1 ? 'btn-success' : 'btn-secondary' }}">
+                                            <i class="fa {{ $category->status === 1 ? 'fa-check' : 'fa-times' }}"></i>
+                                            {{ $category->status === 1 ? 'فعال' : 'غیرفعال' }}
+                                        </button>
                                     </td>
                                     <td>
                                         {{ Morilog\Jalali\Jalalian::forge($category->created_at)->format('%A, %d %B %y') }}
@@ -98,81 +98,120 @@
 
             </section>
         </section>
-    </section>
 
+        <!-- Toast wrapper for any remaining toast functionality -->
+        <div class="toast-wrapper position-fixed" style="top: 20px; right: 20px; z-index: 9999;"></div>
+    </section>
 @endsection
 
-@section('script')
-
+@section('scripts')
+    @parent
     <script type="text/javascript">
-        function changeStatus(id){
+        // Handle success alert
+        @if (session('swal-success'))
+            $(document).ready(function() {
+                Swal.fire({
+                    title: 'عملیات با موفقیت انجام شد',
+                    text: '{{ session('swal-success') }}',
+                    icon: 'success',
+                    confirmButtonText: 'باشه'
+                });
+            });
+        @endif
+
+        function changeStatus(id) {
             var element = $("#" + id)
             var url = element.attr('data-url')
-            var elementValue = !element.prop('checked');
+            var isActive = element.hasClass('btn-success');
 
             $.ajax({
-                url : url,
-                type : "GET",
-                success : function(response){
-                    if(response.status){
-                        if(response.checked){
-                            element.prop('checked', true);
+                url: url,
+                type: "GET",
+                success: function(response) {
+                    if (response.status) {
+                        if (response.checked) {
+                            // Set to active
+                            element.removeClass('btn-secondary').addClass('btn-success');
+                            element.find('i').removeClass('fa-times').addClass('fa-check');
+                            element.contents().filter(function() {
+                                return this.nodeType === 3; // Text nodes
+                            }).remove();
+                            element.append(' فعال');
                             successToast('دسته بندی با موفقیت فعال شد')
-                        }
-                        else{
-                            element.prop('checked', false);
+                        } else {
+                            // Set to inactive
+                            element.removeClass('btn-success').addClass('btn-secondary');
+                            element.find('i').removeClass('fa-check').addClass('fa-times');
+                            element.contents().filter(function() {
+                                return this.nodeType === 3; // Text nodes
+                            }).remove();
+                            element.append(' غیرفعال');
                             successToast('دسته بندی با موفقیت غیر فعال شد')
                         }
-                    }
-                    else{
-                        element.prop('checked', elementValue);
+                    } else {
                         errorToast('هنگام ویرایش مشکلی بوجود امده است')
                     }
                 },
-                error : function(){
-                    element.prop('checked', elementValue);
+                error: function() {
                     errorToast('ارتباط برقرار نشد')
                 }
             });
+        }
 
-            function successToast(message){
+        function successToast(message) {
+            Swal.fire({
+                title: 'موفقیت!',
+                text: message,
+                icon: 'success',
+                confirmButtonText: 'باشه'
+            });
+        }
 
-                var successToastTag = '<section class="toast" data-delay="5000">\n' +
-                    '<section class="toast-body py-3 d-flex bg-success text-white">\n' +
-                        '<strong class="ml-auto">' + message + '</strong>\n' +
-                        '<button type="button" class="mr-2 close" data-dismiss="toast" aria-label="Close">\n' +
-                            '<span aria-hidden="true">&times;</span>\n' +
-                            '</button>\n' +
-                            '</section>\n' +
-                            '</section>';
-
-                            $('.toast-wrapper').append(successToastTag);
-                            $('.toast').toast('show').delay(5500).queue(function() {
-                                $(this).remove();
-                            })
-            }
-
-            function errorToast(message){
-
-                var errorToastTag = '<section class="toast" data-delay="5000">\n' +
-                    '<section class="toast-body py-3 d-flex bg-danger text-white">\n' +
-                        '<strong class="ml-auto">' + message + '</strong>\n' +
-                        '<button type="button" class="mr-2 close" data-dismiss="toast" aria-label="Close">\n' +
-                            '<span aria-hidden="true">&times;</span>\n' +
-                            '</button>\n' +
-                            '</section>\n' +
-                            '</section>';
-
-                            $('.toast-wrapper').append(errorToastTag);
-                            $('.toast').toast('show').delay(5500).queue(function() {
-                                $(this).remove();
-                            })
-            }
+        function errorToast(message) {
+            Swal.fire({
+                title: 'خطا!',
+                text: message,
+                icon: 'error',
+                confirmButtonText: 'باشه'
+            });
         }
     </script>
 
 
-@include('admin.alerts.sweetalert.delete-confirm', ['className' => 'delete'])
+    <script>
+        $(document).ready(function() {
+            $('.delete').on('click', function(e) {
+                e.preventDefault();
 
+                const swalWithBootstrapButtons = Swal.mixin({
+                    customClass: {
+                        confirmButton: 'btn btn-success mx-2',
+                        cancelButton: 'btn btn-danger mx-2'
+                    },
+                    buttonsStyling: false
+                });
 
+                swalWithBootstrapButtons.fire({
+                    title: 'آیا از حذف کردن داده مطمن هستید؟',
+                    text: "شما میتوانید درخواست خود را لغو نمایید",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: 'بله داده حذف شود.',
+                    cancelButtonText: 'خیر درخواست لغو شود.',
+                    reverseButtons: true
+                }).then((result) => {
+                    if (result.value == true) {
+                        $(this).parent().submit();
+                    } else if (result.dismiss === Swal.DismissReason.cancel) {
+                        swalWithBootstrapButtons.fire({
+                            title: 'لغو درخواست',
+                            text: "درخواست شما لغو شد",
+                            icon: 'error',
+                            confirmButtonText: 'باشه.'
+                        })
+                    }
+                })
+            })
+        });
+    </script>
 @endsection
