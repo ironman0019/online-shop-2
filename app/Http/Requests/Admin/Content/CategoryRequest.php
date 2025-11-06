@@ -25,7 +25,7 @@ class CategoryRequest extends FormRequest
             return [
                 'name' => 'required|max:120|min:2|string',
                 'description' => 'required|min:5|string',
-                'image' => '',
+                'image' => 'image|mimes:png,jpg,jpeg|nullable',
                 'tags' => 'required|string|max:255',
                 'status' => 'required|numeric|in:0,1'
             ];
@@ -35,7 +35,7 @@ class CategoryRequest extends FormRequest
             return [
                 'name' => 'required|max:120|min:2|string',
                 'description' => 'required|min:5|string',
-                'image' => '',
+                'image' => 'image|mimes:png,jpg,jpeg|nullable',
                 'tags' => 'required|string|max:255',
                 'status' => 'required|numeric|in:0,1'
             ];
