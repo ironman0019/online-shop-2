@@ -12,6 +12,8 @@ class PostCategory extends Model
 
     protected $guarded = ['id'];
 
+    protected $casts = ['image' => 'array'];
+
     /**
      * Return the sluggable configuration array for this model.
      *
