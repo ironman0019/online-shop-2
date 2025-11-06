@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Content;
 use App\Http\Controllers\Controller;
 use App\Models\Content\PostCategory;
 use App\Http\Requests\Admin\Content\CategoryRequest;
+use App\Http\Services\ImageService\ImageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -30,26 +31,23 @@ class CategoryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(CategoryRequest $request)
+    public function store(CategoryRequest $request, ImageService $imageService)
     {
-        $validated = $request->validated();
-        
-        // Generate slug from name if not provided
-        if (empty($validated['slug'])) {
-            $validated['slug'] = Str::slug($validated['name']);
+        $inputs = $request->all();
+
+        if($request->hasFile('image')) {
+            $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'post-categories');
+            $result = $imageService->createIndexAndSave($request->file('image'));
+
+            if($result === false) {
+                return back()->with('swal-error', 'خطا در آپلود عکس');
+            }
+            $inputs['image'] = $result;
         }
         
-        // Handle image upload if provided
-        if ($request->hasFile('image')) {
-            $image = $request->file('image');
-            $imageName = time() . '_' . $image->getClientOriginalName();
-            $image->move(public_path('storage/categories'), $imageName);
-            $validated['image'] = 'storage/categories/' . $imageName;
-        }
+        PostCategory::create($inputs);
         
-        PostCategory::create($validated);
-        
-        return redirect()->route('admin.content.category.index')->with('swal-success', 'دسته بندی با موفقیت ایجاد شد');
+        return to_route('admin.content.category.index')->with('swal-success', 'دسته بندی با موفقیت ایجاد شد');
     }
 
     /**
@@ -63,17 +61,41 @@ class CategoryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(PostCategory $category)
     {
-        //
+        return view('admin.content.category.edit', compact('category'));
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(CategoryRequest $request, PostCategory $category, ImageService $imageService)
     {
-        //
+        $inputs = $request->all();
+
+        if ($request->hasFile('image')) {
+            // Remove old image
+            $imageService->deleteIndex($category->image);
+
+            $imageService->setExclusiveDirectory('images' . DIRECTORY_SEPARATOR . 'post-categories');
+            $result = $imageService->createIndexAndSave($request->file('image'));
+
+            if ($result === false) {
+                return back()->with('swal-error', 'خطا در آپلود عکس');
+            }
+            $inputs['image'] = $result;
+        }
+        else
+        {
+            if(isset($inputs['currentImage']) && !empty($category->image)) {
+                $image = $category->image;
+                $image['currentImage'] = $inputs['currentImage'];
+                $inputs['image'] = $image;
+            }
+        }
+
+        $category->update($inputs);
+        return to_route('admin.content.category.index')->with('swal-success', 'دسته بندی با موفقیت آپدیت شد');
     }
 
     /**
