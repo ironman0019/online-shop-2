@@ -54,7 +54,7 @@
                                     <td>{{ Str::limit($category->description, 20) }}</td>
                                     <td>{{ $category->slug }}</td>
                                     <td>
-                                        <img src="{{ asset($category->image['indexArray'][$category->image['currentImage']]) }}" alt="{{ $category->name }}" width="50"
+                                        <img src="{{$category->image ? asset($category->image['indexArray'][$category->image['currentImage']]) : 'خالی' }}" alt="{{ $category->name }}" width="50"
                                             height="50">
                                     </td>
                                     <td>{{ $category->tags }}</td>
