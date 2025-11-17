@@ -106,11 +106,16 @@ Route::prefix('admin')->middleware([])->name('admin.')->group(function() {
         Route::resource('category', ContentCategoryController::class);
         Route::get('category/{category}/status', [ContentCategoryController::class, 'status'])->name('category.status');
 
+        // Post routes
+        Route::resource('post', PostController::class);
+        Route::get('post/{post}/status', [PostController::class, 'status'])->name('post.status');
+        Route::get('post/{post}/commentable', [PostController::class, 'commentable'])->name('post.commentable');
+
+
         Route::resource('comment', ContentCommentController::class);
         Route::resource('faq', FAQController::class);
         Route::resource('menu', MenuController::class);
         Route::resource('page', PageController::class);
-        Route::resource('post', PostController::class);
     });
 
 
