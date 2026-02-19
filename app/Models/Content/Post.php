@@ -6,10 +6,11 @@ use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Cviebrock\EloquentSluggable\Sluggable;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
-    use SoftDeletes, Sluggable;
+    use SoftDeletes, Sluggable, HasFactory;
 
     protected $guarded = ['id'];
 
