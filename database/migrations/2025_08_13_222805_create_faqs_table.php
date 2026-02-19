@@ -15,7 +15,7 @@ return new class extends Migration
             $table->id();
             $table->text('question');
             $table->text('answer');
-            $table->string('sulg')->unique()->nullable();
+            $table->string('slug')->unique()->nullable();
             $table->string('tags');
             $table->tinyInteger('status')->default(0);
             $table->timestamps();
