@@ -111,9 +111,12 @@ Route::prefix('admin')->middleware([])->name('admin.')->group(function() {
         Route::get('post/{post}/status', [PostController::class, 'status'])->name('post.status');
         Route::get('post/{post}/commentable', [PostController::class, 'commentable'])->name('post.commentable');
 
+        // Faq routes
+        Route::resource('faq', FAQController::class);
+        Route::get('faq/{faq}/status', [FAQController::class, 'status'])->name('faq.status');
+
 
         Route::resource('comment', ContentCommentController::class);
-        Route::resource('faq', FAQController::class);
         Route::resource('menu', MenuController::class);
         Route::resource('page', PageController::class);
     });
