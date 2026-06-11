@@ -1,7 +1,7 @@
 @extends('admin.layouts.master')
 
 @section('head-tag')
-    <title>پیج ساز</title>
+    <title>ویرایش پیج</title>
 @endsection
 
 @section('content')
@@ -10,7 +10,7 @@
             <li class="breadcrumb-item font-size-12"> <a href="#">خانه</a></li>
             <li class="breadcrumb-item font-size-12"> <a href="#">بخش محتوا</a></li>
             <li class="breadcrumb-item font-size-12"> <a href="#">پیج ساز</a></li>
-            <li class="breadcrumb-item font-size-12 active" aria-current="page"> ایجاد پیج</li>
+            <li class="breadcrumb-item font-size-12 active" aria-current="page"> ویرایش پیج</li>
         </ol>
     </nav>
 
@@ -20,7 +20,7 @@
             <section class="main-body-container">
                 <section class="main-body-container-header">
                     <h5>
-                        ایجاد پیج
+                        ویرایش پیج
                     </h5>
                 </section>
 
@@ -29,14 +29,15 @@
                 </section>
 
                 <section>
-                    <form id="form" action="{{ route('admin.content.page.store') }}" method="post">
+                    <form id="form" action="{{ route('admin.content.page.update', $page) }}" method="post">
                         @csrf
+                        @method('PUT')
                         <section class="row">
 
                             <section class="col-12 col-md-6">
                                 <div class="form-group">
                                     <label for="">عنوان </label>
-                                    <input name="title" type="text" class="form-control form-control-sm" value="{{ old('title') }}">
+                                    <input name="title" type="text" class="form-control form-control-sm" value="{{ old('title', $page->title) }}">
                                 </div>
                                 @error('title')
                                     <small class="text-danger">{{ $message }}</small>
@@ -47,7 +48,7 @@
                                 <div class="form-group">
                                     <label for="tags">تگ ها</label>
                                     <input type="hidden" class="form-control form-control-sm" name="tags" id="tags"
-                                        value="{{ old('tags') }}">
+                                        value="{{ old('tags', $page->tags) }}">
                                     <select class="select2 form-control form-control-sm" id="select_tags" multiple>
 
                                     </select>
@@ -61,8 +62,8 @@
                                 <div class="form-group">
                                     <label for="status">وضعیت</label>
                                     <select name="status" id="status" class="form-control form-control-sm">
-                                        <option value="1">فعال</option>
-                                        <option value="0">غیر فعال</option>
+                                        <option value="1" @selected(old('status', $page->status) == 1)>فعال</option>
+                                        <option value="0"  @selected(old('status', $page->status) == 0)>غیر فعال</option>
                                     </select>
                                 </div>
                                 @error('status')
@@ -73,7 +74,7 @@
                             <section class="col-12">
                                 <div class="form-group">
                                     <label for="">محتوی</label>
-                                    <textarea name="body" id="body" class="form-control form-control-sm" rows="6">{{ old('body') }}</textarea>
+                                    <textarea name="body" id="body" class="form-control form-control-sm" rows="6">{{ old('body', $page->body) }}</textarea>
                                 </div>
                                 @error('body')
                                     <small class="text-danger">{{ $message }}</small>
