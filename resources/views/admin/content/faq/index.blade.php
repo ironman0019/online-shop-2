@@ -85,6 +85,9 @@
 
                         </tbody>
                     </table>
+                    <div>
+                        {{ $faqs->links() }}
+                    </div>
                 </section>
 
             </section>

@@ -94,6 +94,9 @@
                             @endforeach
                         </tbody>
                     </table>
+                    <div>
+                        {{ $category->links() }}
+                    </div>
                 </section>
 
             </section>
