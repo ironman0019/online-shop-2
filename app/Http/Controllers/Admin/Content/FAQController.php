@@ -35,7 +35,7 @@ class FAQController extends Controller
         
         faq::create($inputs);
         
-        return to_route('admin.content.faq.index')->with('swal-success', ' سوال موفقیت ایجاد شد');
+        return to_route('admin.content.faq.index')->with('swal-success', ' سوال با موفقیت ایجاد شد');
     }
 
     /**
